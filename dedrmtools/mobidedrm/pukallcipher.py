@@ -43,6 +43,7 @@ class PukallCipher:
                 wkey[j] ^= key_xor_val
 
             if sys.version_info[0] == 2:
+                # noinspection PyTypeChecker
                 dst[i] = chr(cur_byte)
             else:
                 dst[i] = cur_byte

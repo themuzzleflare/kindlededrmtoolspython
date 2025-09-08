@@ -17,8 +17,11 @@ global charMap1
 global charMap3
 global charMap4
 
+# noinspection PyRedeclaration
 charMap1 = b'n5Pr6St7Uv8Wx9YzAb0Cd1Ef2Gh3Jk4M'
+# noinspection PyRedeclaration
 charMap3 = b'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'
+# noinspection PyRedeclaration
 charMap4 = b'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789'
 
 # crypto digestroutines
@@ -98,11 +101,11 @@ def get_six_bits_from_bit_field(bit_field, offset):
 
 
 # 8 bits to six bits encoding from hash to generate PID string
-def encode_pid(hash):
+def encode_pid(hash_data):
     global charMap3
     pid = b''
     for position in range(0, 8):
-        pid += bytes(bytearray([charMap3[get_six_bits_from_bit_field(hash, position)]]))
+        pid += bytes(bytearray([charMap3[get_six_bits_from_bit_field(hash_data, position)]]))
 
     return pid
 
@@ -136,8 +139,8 @@ def generate_device_pid(table, dsn, nb_roll):
     global charMap4
     seed = generate_pid_seed(table, dsn)
     pid_ascii = b''
-    pid = [(seed >> 24) & 0xFF, (seed >> 16) & 0xff, (seed >> 8) & 0xFF, (seed) & 0xFF, (seed >> 24) & 0xFF,
-           (seed >> 16) & 0xff, (seed >> 8) & 0xFF, (seed) & 0xFF]
+    pid = [(seed >> 24) & 0xFF, (seed >> 16) & 0xff, (seed >> 8) & 0xFF, seed & 0xFF, (seed >> 24) & 0xFF,
+           (seed >> 16) & 0xff, (seed >> 8) & 0xFF, seed & 0xFF]
     index = 0
     for counter in range(0, nb_roll):
         pid[index] = pid[index] ^ dsn[counter]
@@ -159,7 +162,7 @@ def checksum_pid(s):
     crc = crc ^ (crc >> 16)
     res = s
     l = len(charMap4)
-    for i in (0, 1):
+    for _ in (0, 1):
         b = crc & 0xff
         pos = (b // l) ^ (b % l)
         res += bytes(bytearray([charMap4[pos % l]]))
@@ -193,6 +196,7 @@ def get_kindle_pids(rec209, token, serialnum):
         serialnum = serialnum.encode('utf-8')
 
     if sys.version_info[0] == 2:
+        # noinspection PyUnresolvedReferences
         if isinstance(serialnum, unicode):
             serialnum = serialnum.encode('utf-8')
 

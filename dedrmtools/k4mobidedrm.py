@@ -10,6 +10,7 @@ import sys
 import time
 import traceback
 
+from dedrmtools.book import Book
 from dedrmtools.kfxdedrm.kfxdedrm import KFXZipBook
 from dedrmtools.mobidedrm.mobidedrm import MobiBook
 from dedrmtools.topazextract.topazextract import TopazBook
@@ -17,7 +18,8 @@ from kindlekeys import kgenpids
 
 try:
     import html.entities as htmlentitydefs
-except:
+except ImportError:
+    # noinspection PyUnresolvedReferences
     import htmlentitydefs
 
 import json
@@ -59,6 +61,7 @@ def cleanup_name(name) -> str:
 # must be passed unicode
 def unescape(text):
     def fixup(m):
+        # noinspection PyShadowingNames
         text = m.group(0)
         if text[:2] == "&#":
             # character reference
@@ -72,6 +75,7 @@ def unescape(text):
         else:
             # named entity
             try:
+                # noinspection PyShadowingNames
                 text = chr(htmlentitydefs.name2codepoint[text[1:-1]])
             except KeyError:
                 pass
@@ -80,7 +84,7 @@ def unescape(text):
     return re.sub("&#?\\w+;", fixup, text)
 
 
-def get_decrypted_book(infile, k_databases, serials, pids, starttime=time.time()):
+def get_decrypted_book(infile, k_databases, serials, pids, starttime=time.time()) -> 'Book':
     # handle the obvious cases at the beginning
     if not os.path.isfile(infile):
         raise DrmException("Input file does not exist.")
@@ -102,6 +106,7 @@ def get_decrypted_book(infile, k_databases, serials, pids, starttime=time.time()
     else:
         mb = TopazBook(infile)
 
+    # noinspection PyBroadException
     try:
         bookname = unescape(mb.get_book_title())
         print("Decrypting {1} ebook: {0}".format(bookname, mb.get_book_type()))
@@ -172,6 +177,7 @@ def decrypt_book(infile, outdir, k_database_files, serials, pids):
 
     if book is TopazBook:
         zipname = os.path.join(outdir, outfilename + "_SVG.zip")
+        # noinspection PyUnresolvedReferences
         book.get_svg_zip(zipname)
         print("Saved SVG ZIP Archive for {1:s} after {0:.1f} seconds".format(time.time() - starttime, outfilename))
 

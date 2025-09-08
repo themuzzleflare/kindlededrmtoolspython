@@ -2,19 +2,25 @@
 import os
 import re
 import sys
-from ctypes import windll, c_wchar_p, c_uint, POINTER, byref, \
-    create_unicode_buffer, create_string_buffer, string_at, Structure, c_void_p, cast
+from ctypes import windll, c_wchar_p, c_uint, POINTER, byref, create_unicode_buffer, create_string_buffer, string_at, \
+    Structure, c_void_p, cast
 from struct import unpack
 
-from Cryptodome.Cipher import AES
-from Cryptodome.Protocol.KDF import PBKDF2
-from Cryptodome.Util import Counter
+try:
+    from Cryptodome.Cipher import AES
+    from Cryptodome.Protocol.KDF import PBKDF2
+    from Cryptodome.Util import Counter
+except ImportError:
+    from Crypto.Cipher import AES
+    from Crypto.Protocol.KDF import PBKDF2
+    from Crypto.Util import Counter
 
 from dedrmtools.kindlekeys.kindlekeygen import KindleKey
 
 try:
     import winreg
 except ImportError:
+    # noinspection PyUnresolvedReferences
     import _winreg as winreg
 
 MAX_PATH = 255
@@ -46,6 +52,7 @@ class RegError(Exception):
 
 
 def get_system_directory():
+    # noinspection PyUnresolvedReferences,PyPep8Naming
     GetSystemDirectoryW = kernel32.GetSystemDirectoryW
     GetSystemDirectoryW.argtypes = [c_wchar_p, c_uint]
     GetSystemDirectoryW.restype = c_uint
@@ -56,6 +63,7 @@ def get_system_directory():
 
 
 def get_volume_serial_number(path=get_system_directory().split('\\')[0] + '\\'):
+    # noinspection PyPep8Naming,PyUnresolvedReferences
     GetVolumeInformationW = kernel32.GetVolumeInformationW
     GetVolumeInformationW.argtypes = [c_wchar_p, c_wchar_p, c_uint,
                                       POINTER(c_uint), POINTER(c_uint),
@@ -74,6 +82,7 @@ def get_id_string():
 
 
 def get_last_error():
+    # noinspection PyUnresolvedReferences,PyPep8Naming
     GetLastError = kernel32.GetLastError
     GetLastError.argtypes = None
     GetLastError.restype = c_uint
@@ -82,6 +91,7 @@ def get_last_error():
 
 
 def crypt_unprotect_data(indata, entropy, flags):
+    # noinspection PyUnresolvedReferences
     _CryptUnprotectData = crypt32.CryptUnprotectData
     _CryptUnprotectData.argtypes = [DataBlob_p, c_wchar_p, DataBlob_p,
                                     c_void_p, c_void_p, c_uint, DataBlob_p]
@@ -103,10 +113,12 @@ def crypt_unprotect_data(indata, entropy, flags):
 # name must be unicode string, not byte string.
 def get_environment_variable(name):
     import ctypes
+    # noinspection PyUnresolvedReferences
     n = ctypes.windll.kernel32.GetEnvironmentVariableW(name, None, 0)
     if n == 0:
         return None
     buf = ctypes.create_unicode_buffer("\0" * n)
+    # noinspection PyUnresolvedReferences
     ctypes.windll.kernel32.GetEnvironmentVariableW(name, buf, n)
     return buf.value
 
@@ -116,6 +128,7 @@ class KindleKeyWindows(KindleKey):
         print("KindleKeyWindows")
 
     def get_username(self):
+        # noinspection PyPep8Naming,PyUnresolvedReferences
         GetUserNameW = advapi32.GetUserNameW
         GetUserNameW.argtypes = [c_wchar_p, POINTER(c_uint)]
         GetUserNameW.restype = c_uint
@@ -256,7 +269,7 @@ class KindleKeyWindows(KindleKey):
         ]
         namehashmap = {self.encode_hash(n, testMap8): n for n in names}
         # print(namehashmap)
-        DB = {}
+        db = {}
         with open(k_info_file, 'rb') as infoReader:
             data = infoReader.read()
         # assume .kinf2011 or .kinf2018 style .kinf file
@@ -267,21 +280,25 @@ class KindleKeyWindows(KindleKey):
 
         # starts with an encoded and encrypted header blob
         headerblob = items.pop(0)
-        encryptedValue = self.decode(headerblob, testMap1)
-        cleartext = self.unprotect_header_data(encryptedValue)
+        encrypted_value = self.decode(headerblob, testMap1)
+        cleartext = self.unprotect_header_data(encrypted_value)
         # print "header  cleartext:",cleartext
         # now extract the pieces that form the added entropy
-        pattern = re.compile(br'''\[Version:(\d+)\]\[Build:(\d+)\]\[Cksum:([^\]]+)\]\[Guid:([\{\}a-z0-9\-]+)\]''',
+        pattern = re.compile(br'''\[Version:(\d+)]\[Build:(\d+)]\[Cksum:([^]]+)]\[Guid:([{}a-z0-9\-]+)]''',
                              re.IGNORECASE)
         for m in re.finditer(pattern, cleartext):
             version = int(m.group(1))
             build = m.group(2)
             guid = m.group(4)
 
+        # noinspection PyUnboundLocalVariable
         if version == 5:  # .kinf2011
+            # noinspection PyUnboundLocalVariable
             added_entropy = build + guid
         elif version == 6:  # .kinf2018
+            # noinspection PyUnboundLocalVariable
             salt = str(0x6d8 * int(build)).encode('utf-8') + guid
+            # noinspection PyTypeChecker
             sp = self.get_username() + b'+@#$%+' + get_id_string().encode('utf-8')
             passwd = self.encode(self.sha256(sp), charMap5)
             key = PBKDF2(passwd, salt, count=10000, dkLen=0x400)[:32]  # this is very slow
@@ -340,12 +357,14 @@ class KindleKeyWindows(KindleKey):
             encdata = encdata + pfx
             # print "rearranged data:",encdata
 
+            # noinspection PyUnboundLocalVariable
             if version == 5:
                 # decode using new testMap8 to get the original CryptProtect Data
-                encryptedValue = self.decode(encdata, testMap8)
+                encrypted_value = self.decode(encdata, testMap8)
                 # print "decoded data:",encryptedValue.encode('hex')
+                # noinspection PyUnboundLocalVariable
                 entropy = self.sha1(keyhash) + added_entropy
-                cleartext = crypt_unprotect_data(encryptedValue, entropy, 1)
+                cleartext = crypt_unprotect_data(encrypted_value, entropy, 1)
             elif version == 6:
                 # decode using new testMap8 to get IV + ciphertext
                 iv_ciphertext = self.decode(encdata, testMap8)
@@ -357,23 +376,24 @@ class KindleKeyWindows(KindleKey):
                 iv = iv_ints[0] << 64 | iv_ints[1]
                 # set up AES-CTR
                 ctr = Counter.new(128, initial_value=iv)
+                # noinspection PyUnboundLocalVariable
                 cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
                 # decrypt and decode
                 cleartext = self.decode(cipher.decrypt(ciphertext), charMap5)
 
             if len(cleartext) > 0:
                 # print "cleartext data:",cleartext,":end data"
-                DB[keyname] = cleartext
+                db[keyname] = cleartext
             # print keyname, cleartext
 
-        if len(DB) > 6:
+        if len(db) > 6:
             # store values used in decryption
-            DB[b'IDString'] = get_id_string().encode('utf-8')
-            DB[b'UserName'] = self.get_username()
+            db[b'IDString'] = get_id_string().encode('utf-8')
+            db[b'UserName'] = self.get_username()
             print("Decrypted key file using IDString '{0:s}' and UserName '{1:s}'".format(get_id_string(),
                                                                                           self.get_username().decode(
                                                                                               'utf-8')))
         else:
             print("Couldn't decrypt file.")
-            DB = {}
-        return DB
+            db = {}
+        return db

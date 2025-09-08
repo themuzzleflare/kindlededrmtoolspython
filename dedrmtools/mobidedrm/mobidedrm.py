@@ -45,7 +45,7 @@ def checksum_pid(s):
     crc = crc ^ (crc >> 16)
     res = s
     l = len(letters)
-    for i in (0, 1):
+    for _ in (0, 1):
         b = crc & 0xff
         pos = (b // l) ^ (b % l)
         res += bytes(bytearray([letters[pos % l]]))
@@ -162,6 +162,7 @@ class MobiBook(Book):
                 nitems, = struct.unpack('>I', exth[8:12])
                 pos = 12
                 for i in range(nitems):
+                    # noinspection PyShadowingBuiltins
                     type, size = struct.unpack('>II', exth[pos: pos + 8])
                     content = exth[pos + 8: pos + size]
                     self.meta_array[type] = content
@@ -246,11 +247,13 @@ class MobiBook(Book):
             bigpid = pid.encode('utf-8').ljust(16, b'\0')
             temp_key = pc1(keyvec1, bigpid, False)
             if sys.version_info[0] == 2:
+                # noinspection PyTypeChecker
                 temp_key_sum = sum(map(ord, temp_key)) & 0xff
             else:
                 temp_key_sum = sum(temp_key) & 0xff
             found_key = None
             for i in range(count):
+                # noinspection PyShadowingBuiltins
                 verification, size, type, cksum, cookie = struct.unpack('>LLLBxxx32s', data[i * 0x30:i * 0x30 + 0x30])
                 if cksum == temp_key_sum:
                     cookie = pc1(temp_key, cookie)
@@ -265,11 +268,13 @@ class MobiBook(Book):
             pid = '00000000'
             temp_key = keyvec1
             if sys.version_info[0] == 2:
+                # noinspection PyTypeChecker
                 temp_key_sum = sum(map(ord, temp_key)) & 0xff
             else:
                 temp_key_sum = sum(temp_key) & 0xff
 
             for i in range(count):
+                # noinspection PyShadowingBuiltins
                 verification, size, type, cksum, cookie = struct.unpack('>LLLBxxx32s', data[i * 0x30:i * 0x30 + 0x30])
                 if cksum == temp_key_sum:
                     cookie = pc1(temp_key, cookie)
@@ -277,9 +282,11 @@ class MobiBook(Book):
                     if verification == ver:
                         found_key = finalkey
                         break
+        # noinspection PyUnboundLocalVariable
         return [found_key, pid]
 
     def get_file(self, outpath):
+        # noinspection PyTypeChecker
         open(outpath, 'wb').write(self.mobi_data)
 
     def get_book_type(self):
@@ -416,6 +423,7 @@ def cli_main():
             pidlist = []
         try:
             stripped_file = get_unencrypted_book(infile, pidlist)
+            # noinspection PyTypeChecker
             open(outfile, 'wb').write(stripped_file)
         except DrmException as e:
             print("MobiDeDRM v{0} Error: {1:s}".format(__version__, e.args[0]))

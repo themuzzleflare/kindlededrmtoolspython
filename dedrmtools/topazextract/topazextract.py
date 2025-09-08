@@ -18,6 +18,7 @@ class DrmException(Exception):
 
 
 class TopazBook(Book):
+    # noinspection PyUnusedLocal
     def __init__(self, filename):
         pass
 
@@ -80,7 +81,7 @@ def cli_main():
         print("Output Directory {0} Does Not Exist.".format(outdir))
         return 1
 
-    kDatabaseFiles = []
+    k_database_files = []
     serials = []
     pids = []
 
@@ -88,7 +89,7 @@ def cli_main():
         if o == '-k':
             if a is None:
                 raise DrmException("Invalid parameter for -k")
-            kDatabaseFiles.append(a)
+            k_database_files.append(a)
         if o == '-p':
             if a is None:
                 raise DrmException("Invalid parameter for -p")
@@ -104,8 +105,9 @@ def cli_main():
     title = tb.get_book_title()
     print("Processing Book: {0}".format(title))
     md1, md2 = tb.get_pid_meta_info()
-    pids.extend(kgenpids.get_pid_list(md1, md2, serials, kDatabaseFiles))
+    pids.extend(kgenpids.get_pid_list(md1, md2, serials, k_database_files))
 
+    # noinspection PyBroadException
     try:
         print("Decrypting Book")
         tb.process_book(pids)
@@ -121,17 +123,19 @@ def cli_main():
         # removing internal temporary directory of pieces
         tb.cleanup()
 
-    except DrmException as e:
+    except DrmException:
         print("Decryption failed\n{0}".format(traceback.format_exc()))
 
+        # noinspection PyBroadException
         try:
             tb.cleanup()
         except:
             pass
         return 1
 
-    except Exception as e:
+    except Exception:
         print("Decryption failed\n{0}".format(traceback.format_exc()))
+        # noinspection PyBroadException
         try:
             tb.cleanup()
         except:

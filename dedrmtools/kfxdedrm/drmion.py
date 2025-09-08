@@ -1,5 +1,6 @@
 #  Copyright © 2025 Paul Tavitian.
 
+# noinspection PyCompatibility
 import lzma
 
 try:

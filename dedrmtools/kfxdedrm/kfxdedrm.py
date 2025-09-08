@@ -68,6 +68,7 @@ class KFXZipBook(Book):
             else:
                 continue
 
+            # noinspection PyBroadException
             try:
                 voucher = DrmIonVoucher(BytesIO(data), pid[:dsn_len], pid[dsn_len:])
                 voucher.parse()

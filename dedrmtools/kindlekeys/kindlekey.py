@@ -59,27 +59,34 @@ def cli_main():
     # make sure the outpath is canonical
     outpath = os.path.realpath(os.path.normpath(outpath))
 
-    if not KindleKey.get_instance().getKey(outpath, files):
+    if not KindleKey.get_instance().getkey(outpath, files):
         print("Could not retrieve Kindle for Mac/PC key.")
     return 0
 
 
 def gui_main():
     try:
+        # noinspection PyCompatibility
         import tkinter
+        # noinspection PyCompatibility
         import tkinter.constants
+        # noinspection PyCompatibility
         import tkinter.messagebox
         import traceback
-    except:
+    except ImportError:
         return cli_main()
 
     class ExceptionDialog(tkinter.Frame):
+        # noinspection PyShadowingNames
         def __init__(self, root, text):
             tkinter.Frame.__init__(self, root, border=5)
+            # noinspection PyTypeChecker
             label = tkinter.Label(self, text="Unexpected error:",
                                   anchor=tkinter.constants.W, justify=tkinter.constants.LEFT)
+            # noinspection PyTypeChecker
             label.pack(fill=tkinter.constants.X, expand=0)
             self.text = tkinter.Text(self)
+            # noinspection PyTypeChecker
             self.text.pack(fill=tkinter.constants.BOTH, expand=1)
 
             self.text.insert(tkinter.constants.END, text)
@@ -89,6 +96,7 @@ def gui_main():
     root.withdraw()
     progpath, progname = os.path.split(argv[0])
     success = False
+    # noinspection PyBroadException
     try:
         keys = KindleKey.get_instance().kindlekeys()
         keycount = 0
@@ -109,6 +117,7 @@ def gui_main():
         root.wm_state('normal')
         root.title(progname)
         text = traceback.format_exc()
+        # noinspection PyTypeChecker
         ExceptionDialog(root, text).pack(fill=tkinter.constants.BOTH, expand=1)
         root.mainloop()
     if not success:

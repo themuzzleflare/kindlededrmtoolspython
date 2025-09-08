@@ -7,6 +7,7 @@ from dedrmtools.kfxdedrm.systemsymbols import SystemSymbols
 class SymbolTable(object):
     table = None
 
+    # noinspection PyTypeChecker
     def __init__(self):
         self.table = [None] * IonUtils.SID_ION_1_0_MAX
         self.table[IonUtils.SID_ION] = SystemSymbols.ION
@@ -34,4 +35,5 @@ class SymbolTable(object):
 
     def importunknown(self, name, maxid):
         for i in range(maxid):
+            # noinspection PyTypeChecker
             self.table.append("%s#%d" % (name, i + 1))

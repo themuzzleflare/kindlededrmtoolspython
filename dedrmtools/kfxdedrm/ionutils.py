@@ -165,6 +165,7 @@ class IonUtils:
         padlen = len(st)
         divs = padlen // magic
         cntr = 0
+        # noinspection PyUnusedLocal
         i_var6 = 0
         offset = 0
         if 0 < ((magic - 1) + divs):

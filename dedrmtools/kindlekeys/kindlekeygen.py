@@ -1,4 +1,6 @@
 #  Copyright © 2025 Paul Tavitian.
+from __future__ import annotations
+
 import codecs
 import hashlib
 import json
@@ -6,6 +8,7 @@ import os
 import sys
 from abc import ABC, abstractmethod
 from struct import pack
+from typing import Any
 
 try:
     from Cryptodome.Cipher import AES
@@ -32,15 +35,15 @@ class KindleKey(ABC):
             raise DrmException("This script only runs under Windows or Mac OS X.")
 
     @abstractmethod
-    def get_username(self):
+    def get_username(self) -> str | bytes | Any:
         pass
 
     @abstractmethod
-    def get_kindle_info_files(self):
+    def get_kindle_info_files(self) -> list[Any]:
         pass
 
     @abstractmethod
-    def get_db_from_file(self, k_info_file):
+    def get_db_from_file(self, k_info_file) -> dict[Any, Any]:
         pass
 
     @staticmethod
@@ -120,6 +123,7 @@ class KindleKey(ABC):
     def unprotect_header_data(encrypted_data):
         passwd_data = b'header_key_data'
         salt = b'HEADER.2011'
+        # noinspection PyTypeChecker
         key_iv = PBKDF2(passwd_data, salt, dkLen=256, count=128)
         return AES.new(key_iv[0:32], AES.MODE_CBC, key_iv[32:48]).decrypt(encrypted_data)
 

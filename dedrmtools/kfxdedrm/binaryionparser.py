@@ -40,6 +40,7 @@ except ImportError:
                 from backports import lzma
             except ImportError:
                 # Windows-friendly choice: pylzma wheels
+                # noinspection PyUnresolvedReferences
                 import pylzma as lzma
 
 
@@ -79,6 +80,7 @@ class BinaryIonParser(object):
         self.localremaining = -1
         self.eof = False
         self.isinstruct = False
+        # noinspection PyAttributeOutsideInit
         self.containerstack = []
         self.stream.seek(self.initpos)
 
@@ -415,6 +417,7 @@ class BinaryIonParser(object):
         self.preparevalue()
         result = self.symbols.findbyid(self.value)
         if result == "":
+            # noinspection PyStringFormat
             result = "SYMBOL#%d" % self.value
         return result
 
@@ -538,17 +541,17 @@ class BinaryIonParser(object):
     def ionwalk(self, supert, indent, lst):
         while self.hasnext():
             if supert == IonUtils.TID_STRUCT:
-                L = self.getfieldname() + ":"
+                l = self.getfieldname() + ":"
             else:
-                L = ""
+                l = ""
 
             t = self.next()
             if t in [IonUtils.TID_STRUCT, IonUtils.TID_LIST]:
-                if L != "":
-                    lst.append(indent + L)
-                L = self.gettypename()
-                if L != "":
-                    lst.append(indent + L + "::")
+                if l != "":
+                    lst.append(indent + l)
+                l = self.gettypename()
+                if l != "":
+                    lst.append(indent + l + "::")
                 if t == IonUtils.TID_STRUCT:
                     lst.append(indent + "{")
                 else:
@@ -565,21 +568,21 @@ class BinaryIonParser(object):
 
             else:
                 if t == IonUtils.TID_STRING:
-                    L += ('"%s"' % self.stringvalue())
+                    l += ('"%s"' % self.stringvalue())
                 elif t in [IonUtils.TID_CLOB, IonUtils.TID_BLOB]:
-                    L += ("{%s}" % self.printlob(self.lobvalue()))
+                    l += ("{%s}" % self.printlob(self.lobvalue()))
                 elif t == IonUtils.TID_POSINT:
-                    L += str(self.intvalue())
+                    l += str(self.intvalue())
                 elif t == IonUtils.TID_SYMBOL:
                     tn = self.gettypename()
                     if tn != "":
                         tn += "::"
-                    L += tn + self.symbolvalue()
+                    l += tn + self.symbolvalue()
                 elif t == IonUtils.TID_DECIMAL:
-                    L += str(self.decimalvalue())
+                    l += str(self.decimalvalue())
                 else:
-                    L += ("TID %d" % t)
-                lst.append(indent + L)
+                    l += ("TID %d" % t)
+                lst.append(indent + l)
 
     def print_(self, lst):
         self.reset()

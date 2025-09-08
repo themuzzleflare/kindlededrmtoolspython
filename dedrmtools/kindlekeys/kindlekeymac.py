@@ -38,9 +38,11 @@ class CryptUnprotectData(object):
         key_iv = PBKDF2(passwd_data, salt, count=0x800, dkLen=0x400)
         self.key = key_iv[0:32]
         self.iv = key_iv[32:48]
+        # noinspection PyUnresolvedReferences
         self.crp.set_decrypt_key(self.key, self.iv)
 
     def decrypt(self, kindlekey: 'KindleKeyMacOS', encrypted_data):
+        # noinspection PyUnresolvedReferences
         cleartext = self.crp.decrypt(encrypted_data)
         cleartext = kindlekey.decode(cleartext, charMap2)
         return cleartext
@@ -139,13 +141,20 @@ def get_mac_addresses_munged():
             # now munge it up the way Kindle app does
             # by xoring it with 0xa5 and swapping elements 3 and 4
             for i in range(6):
+                # noinspection PyTypeChecker
                 maclst[i] = int(b'0x' + maclst[i], 0)
             mlst = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
+            # noinspection PyTypeChecker
             mlst[5] = maclst[5] ^ 0xa5
+            # noinspection PyTypeChecker
             mlst[4] = maclst[3] ^ 0xa5
+            # noinspection PyTypeChecker
             mlst[3] = maclst[4] ^ 0xa5
+            # noinspection PyTypeChecker
             mlst[2] = maclst[2] ^ 0xa5
+            # noinspection PyTypeChecker
             mlst[1] = maclst[1] ^ 0xa5
+            # noinspection PyTypeChecker
             mlst[0] = maclst[0] ^ 0xa5
             macnum = b'%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x' % (mlst[0], mlst[1], mlst[2], mlst[3], mlst[4], mlst[5])
             # print 'munged mac', macnum
@@ -261,11 +270,13 @@ class KindleKeyMacOS(KindleKey):
             filedata = infoReader.read()
 
         data = filedata[:-1]
+        # noinspection PyUnusedLocal
         items = data.split(b'/')
         id_strings = get_id_strings()
         print("trying username ", self.get_username(), " on file ", k_info_file)
         for id_string in id_strings:
             print("trying IDString:", id_string)
+            # noinspection PyBroadException
             try:
                 db = {}
                 items = data.split(b'/')
@@ -280,7 +291,7 @@ class KindleKeyMacOS(KindleKey):
 
                 # now extract the pieces in the same way
                 pattern = re.compile(
-                    br'''\[Version:(\d+)\]\[Build:(\d+)\]\[Cksum:([^\]]+)\]\[Guid:([\{\}a-z0-9\-]+)\]''', re.IGNORECASE)
+                    br'''\[Version:(\d+)]\[Build:(\d+)]\[Cksum:([^]]+)]\[Guid:([{}a-z0-9\-]+)]''', re.IGNORECASE)
                 for m in re.finditer(pattern, cleartext):
                     version = int(m.group(1))
                     build = m.group(2)
@@ -290,7 +301,9 @@ class KindleKeyMacOS(KindleKey):
                 # print ("build",build)
                 # print ("guid",guid,"\n")
 
+                # noinspection PyUnboundLocalVariable
                 if version == 5:  # .kinf2011: identical to K4PC, except the build number gets multiplied
+                    # noinspection PyUnboundLocalVariable
                     entropy = str(0x2df * int(build)).encode('utf-8') + guid
                     cud = CryptUnprotectData(self, entropy, id_string)
                     # print ("entropy",entropy)
@@ -316,6 +329,7 @@ class KindleKeyMacOS(KindleKey):
                     # the first 32 chars of the first record of a group
                     # is the MD5 hash of the key name encoded by charMap5
                     keyhash = item[0:32]
+                    # noinspection PyUnusedLocal
                     keyname = b'unknown'
 
                     # unlike K4PC the keyhash is not used in generating entropy
@@ -366,9 +380,11 @@ class KindleKeyMacOS(KindleKey):
                     encdata = encdata[noffset:]
                     encdata = encdata + pfx
 
+                    # noinspection PyUnboundLocalVariable
                     if version == 5:
                         # decode using testMap8 to get the CryptProtect Data
                         encrypted_value = self.decode(encdata, testMap8)
+                        # noinspection PyUnboundLocalVariable
                         cleartext = cud.decrypt(self, encrypted_value)
 
                     elif version == 6:
@@ -382,6 +398,7 @@ class KindleKeyMacOS(KindleKey):
                         iv = iv_ints[0] << 64 | iv_ints[1]
                         # set up AES-CTR
                         ctr = Counter.new(128, initial_value=iv)
+                        # noinspection PyUnboundLocalVariable
                         cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
                         # decrypt and decode
                         cleartext = self.decode(cipher.decrypt(ciphertext), charMap5)
@@ -397,8 +414,10 @@ class KindleKeyMacOS(KindleKey):
             except Exception:
                 print(traceback.format_exc())
                 pass
+        # noinspection PyUnboundLocalVariable
         if len(db) > 6:
             # store values used in decryption
+            # noinspection PyUnboundLocalVariable
             print("Decrypted key file using IDString '{0:s}' and UserName '{1:s}'".format(id_string.decode('utf-8'),
                                                                                           self.get_username().decode(
                                                                                               'utf-8')))
