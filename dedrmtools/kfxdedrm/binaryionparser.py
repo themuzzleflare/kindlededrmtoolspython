@@ -38,10 +38,11 @@ except ImportError:
         except ImportError:
             # Need pip backports.lzma on Python <3.3
             try:
+                # noinspection PyPackageRequirements
                 from backports import lzma
             except ImportError:
                 # Windows-friendly choice: pylzma wheels
-                # noinspection PyUnresolvedReferences
+                # noinspection PyUnresolvedReferences,PyPackageRequirements
                 import pylzma as lzma
 
 
