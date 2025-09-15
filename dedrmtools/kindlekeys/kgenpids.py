@@ -1,3 +1,4 @@
+# coding=utf-8
 __license__ = 'GPL v3'
 __version__ = '3.0'
 
@@ -105,6 +106,7 @@ def encode_pid(hash_data):
     global charMap3
     pid = b''
     for position in range(0, 8):
+        # noinspection PyTypeChecker
         pid += bytes(bytearray([charMap3[get_six_bits_from_bit_field(hash_data, position)]]))
 
     return pid
@@ -147,6 +149,7 @@ def generate_device_pid(table, dsn, nb_roll):
         index = (index + 1) % 8
     for counter in range(0, 8):
         index = ((((pid[counter] >> 5) & 3) ^ pid[counter]) & 0x1f) + (pid[counter] >> 7)
+        # noinspection PyTypeChecker
         pid_ascii += bytes(bytearray([charMap4[index]]))
     return pid_ascii
 
@@ -165,13 +168,14 @@ def checksum_pid(s):
     for _ in (0, 1):
         b = crc & 0xff
         pos = (b // l) ^ (b % l)
+        # noinspection PyTypeChecker
         res += bytes(bytearray([charMap4[pos % l]]))
         crc >>= 8
     return res
 
 
 # old kindle serial number to fixed pid
-def pid_from_serial(s, l) -> bytes:
+def pid_from_serial(s, l):
     global charMap4
     crc = crc32(s)
     arr1 = [0] * l
@@ -186,6 +190,7 @@ def pid_from_serial(s, l) -> bytes:
     pid = b""
     for i in range(l):
         b = arr1[i] & 0xff
+        # noinspection PyTypeChecker
         pid += bytes(bytearray([charMap4[(b >> 7) + ((b >> 5 & 3) ^ (b & 0x1f))]]))
     return pid
 

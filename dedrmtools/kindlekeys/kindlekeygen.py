@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 from __future__ import annotations
 
@@ -8,7 +9,6 @@ import os
 import sys
 from abc import ABC, abstractmethod
 from struct import pack
-from typing import Any
 
 try:
     from Cryptodome.Cipher import AES
@@ -24,7 +24,7 @@ class DrmException(Exception):
 
 class KindleKey(ABC):
     @staticmethod
-    def get_instance() -> 'KindleKey':
+    def get_instance():
         if sys.platform.startswith('win'):
             from dedrmtools.kindlekeys.kindlekeywin import KindleKeyWindows
             return KindleKeyWindows()
@@ -35,15 +35,15 @@ class KindleKey(ABC):
             raise DrmException("This script only runs under Windows or Mac OS X.")
 
     @abstractmethod
-    def get_username(self) -> str | bytes | Any:
+    def get_username(self):
         pass
 
     @abstractmethod
-    def get_kindle_info_files(self) -> list[Any]:
+    def get_kindle_info_files(self):
         pass
 
     @abstractmethod
-    def get_db_from_file(self, k_info_file) -> dict[Any, Any]:
+    def get_db_from_file(self, k_info_file):
         pass
 
     @staticmethod
@@ -136,6 +136,7 @@ class KindleKey(ABC):
         if files == []:
             files = self.get_kindle_info_files()
 
+        # noinspection PyShadowingBuiltins
         for file in files:
             key = self.get_db_from_file(file)
 

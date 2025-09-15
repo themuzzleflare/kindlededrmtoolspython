@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 
 # every VoucherEnvelope version has a corresponding "word" and magic number, used in obfuscating the shared secret

@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 import os
 import re
@@ -57,6 +58,7 @@ def get_system_directory():
     GetSystemDirectoryW.argtypes = [c_wchar_p, c_uint]
     GetSystemDirectoryW.restype = c_uint
 
+    # noinspection PyShadowingBuiltins
     buffer = create_unicode_buffer(MAX_PATH + 1)
     GetSystemDirectoryW(buffer, len(buffer))
     return buffer.value
@@ -133,6 +135,7 @@ class KindleKeyWindows(KindleKey):
         GetUserNameW.argtypes = [c_wchar_p, POINTER(c_uint)]
         GetUserNameW.restype = c_uint
 
+        # noinspection PyShadowingBuiltins
         buffer = create_unicode_buffer(2)
         size = c_uint(len(buffer))
         while not GetUserNameW(buffer, byref(size)):
@@ -141,6 +144,7 @@ class KindleKeyWindows(KindleKey):
                 # bad wine implementation up through wine 1.3.21
                 return "AlternateUserName"
             # double the buffer size
+            # noinspection PyShadowingBuiltins
             buffer = create_unicode_buffer(len(buffer) * 2)
             size.value = len(buffer)
 
@@ -167,6 +171,7 @@ class KindleKeyWindows(KindleKey):
         if 'LOCALAPPDATA' in os.environ.keys():
             # Python 2.x does not return unicode env. Use Python 3.x
             if sys.version_info[0] == 2:
+                # noinspection PyTypeChecker
                 path = winreg.ExpandEnvironmentStrings(u"%LOCALAPPDATA%")
             else:
                 path = winreg.ExpandEnvironmentStrings("%LOCALAPPDATA%")

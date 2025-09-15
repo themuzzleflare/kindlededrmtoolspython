@@ -1,3 +1,4 @@
+# coding=utf-8
 from __future__ import print_function
 
 __license__ = 'GPL v3'
@@ -48,6 +49,7 @@ def checksum_pid(s):
     for _ in (0, 1):
         b = crc & 0xff
         pos = (b // l) ^ (b % l)
+        # noinspection PyTypeChecker
         res += bytes(bytearray([letters[pos % l]]))
         crc >>= 8
     return res.decode()

@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 
 d0x6a06ea70 = [0x3d8d5f4b, 0x017b1e11, 0x8a4abb42, 0x95ac20ad, 0x7b717c3b, 0xf040d968, 0xac2f409d, 0x71ded106,

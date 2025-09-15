@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 
 from abc import ABC, abstractmethod
@@ -9,11 +10,11 @@ class Book(ABC):
         pass
 
     @abstractmethod
-    def get_book_title(self) -> str:
+    def get_book_title(self):
         pass
 
     @abstractmethod
-    def get_book_extension(self) -> str:
+    def get_book_extension(self):
         pass
 
     @abstractmethod
@@ -21,7 +22,7 @@ class Book(ABC):
         pass
 
     @abstractmethod
-    def get_book_type(self) -> str:
+    def get_book_type(self):
         pass
 
     @abstractmethod

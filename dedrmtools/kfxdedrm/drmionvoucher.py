@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 
 import hashlib
@@ -72,6 +73,7 @@ class DrmIonVoucher(object):
                          IonUtils.process_v4648(shared), IonUtils.process_v5683(shared)]
 
         decrypted = False
+        # noinspection PyUnresolvedReferences
         lastexception = None  # type: Exception | None
         for sharedsecret in sharedsecrets:
             key = hmac.new(sharedsecret, b"PIDv3", digestmod=hashlib.sha256).digest()

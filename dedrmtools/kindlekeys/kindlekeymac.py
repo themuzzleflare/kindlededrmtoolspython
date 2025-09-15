@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 import os
 import re
@@ -31,7 +32,7 @@ testMap8 = b'YvaZ3FfUm9Nn_c1XuG4yCAzB0beVg-TtHh5SsIiR6rJjQdW2wEq7KkPpL8lOoMxD'
 
 # implements an Pseudo Mac Version of Windows built-in Crypto routine
 class CryptUnprotectData(object):
-    def __init__(self, kindlekey: 'KindleKeyMacOS', entropy, id_string):
+    def __init__(self, kindlekey, entropy, id_string):
         sp = kindlekey.get_username() + b'+@#$%+' + id_string
         passwd_data = kindlekey.encode(kindlekey.sha256(sp), charMap2)
         salt = entropy
@@ -41,7 +42,7 @@ class CryptUnprotectData(object):
         # noinspection PyUnresolvedReferences
         self.crp.set_decrypt_key(self.key, self.iv)
 
-    def decrypt(self, kindlekey: 'KindleKeyMacOS', encrypted_data):
+    def decrypt(self, kindlekey, encrypted_data):
         # noinspection PyUnresolvedReferences
         cleartext = self.crp.decrypt(encrypted_data)
         cleartext = kindlekey.decode(cleartext, charMap2)

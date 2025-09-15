@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 
 import hashlib
@@ -19,6 +20,9 @@ def _assert(test, msg="Exception"):
 
 
 class IonUtils:
+    def __init__(self):
+        pass
+
     TID_NULL = 0
     TID_BOOLEAN = 1
     TID_POSINT = 2

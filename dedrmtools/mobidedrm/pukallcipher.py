@@ -1,11 +1,15 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 
 import sys
 
 
 class PukallCipher:
+    def __init__(self):
+        pass
+
     @staticmethod
-    def pc1(key, src, decryption: bool = True) -> bytes:
+    def pc1(key, src, decryption=True):
         sum1 = 0
         sum2 = 0
         key_xor_val = 0

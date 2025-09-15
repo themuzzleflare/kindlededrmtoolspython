@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 
 from dedrmtools.kfxdedrm.ionutils import IonUtils

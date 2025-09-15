@@ -1,3 +1,4 @@
+# coding=utf-8
 from __future__ import print_function
 
 __version__ = '6.0'

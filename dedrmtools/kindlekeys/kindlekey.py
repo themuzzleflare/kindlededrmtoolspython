@@ -1,3 +1,4 @@
+# coding=utf-8
 __license__ = 'GPL v3'
 __version__ = '3.1'
 
@@ -36,6 +37,7 @@ def cli_main():
         sys.exit(2)
 
     files = []
+    # noinspection PyUnboundLocalVariable
     for o, a in opts:
         if o == "-h":
             usage(progname)
@@ -43,6 +45,7 @@ def cli_main():
         if o == "-k":
             files = [a]
 
+    # noinspection PyUnboundLocalVariable
     if len(args) > 1:
         usage(progname)
         sys.exit(2)

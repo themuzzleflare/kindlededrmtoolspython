@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 
 import os
@@ -142,7 +143,7 @@ class BinaryIonParser(object):
             else:
                 _assert(self.state == ParserState.EOF)
 
-    def next(self) -> int:
+    def next(self):
         if self.hasnext():
             self.needhasnext = True
             return self.valuetid
@@ -217,7 +218,7 @@ class BinaryIonParser(object):
         except EOFError:
             return -1
 
-    def readtypeid(self) -> int:
+    def readtypeid(self):
         if self.localremaining != -1:
             if self.localremaining < 1:
                 return -1

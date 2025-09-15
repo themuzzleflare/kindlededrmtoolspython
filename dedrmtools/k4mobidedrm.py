@@ -1,3 +1,4 @@
+# coding=utf-8
 __license__ = 'GPL v3'
 __version__ = '6.0'
 
@@ -10,7 +11,6 @@ import sys
 import time
 import traceback
 
-from dedrmtools.book import Book
 from dedrmtools.kfxdedrm.kfxdedrm import KFXZipBook
 from dedrmtools.mobidedrm.mobidedrm import MobiBook
 from dedrmtools.topazextract.topazextract import TopazBook
@@ -35,7 +35,7 @@ class DrmException(Exception):
 # and removal of . at start and end
 # and with some (heavily edited) code from Paul Durrant's kindlenamer.py
 # and some improvements suggested by jhaisley
-def cleanup_name(name) -> str:
+def cleanup_name(name):
     # substitute filename unfriendly characters
     name = name.replace("<", "[").replace(">", "]").replace(" : ", " – ").replace(": ", " – ").replace(":",
                                                                                                        "—").replace("/",
@@ -84,7 +84,7 @@ def unescape(text):
     return re.sub("&#?\\w+;", fixup, text)
 
 
-def get_decrypted_book(infile, k_databases, serials, pids, starttime=time.time()) -> 'Book':
+def get_decrypted_book(infile, k_databases, serials, pids, starttime=time.time()):
     # handle the obvious cases at the beginning
     if not os.path.isfile(infile):
         raise DrmException("Input file does not exist.")
@@ -175,7 +175,7 @@ def decrypt_book(infile, outdir, k_database_files, serials, pids):
     book.get_file(outfile)
     print("Saved decrypted book {1:s} after {0:.1f} seconds".format(time.time() - starttime, outfilename))
 
-    if book is TopazBook:
+    if isinstance(book, TopazBook):
         zipname = os.path.join(outdir, outfilename + "_SVG.zip")
         # noinspection PyUnresolvedReferences
         book.get_svg_zip(zipname)
@@ -208,6 +208,7 @@ def cli_main():
         print("Error in options or arguments: {0}".format(err.args[0]))
         usage(progname)
         sys.exit(2)
+    # noinspection PyUnboundLocalVariable
     if len(args) < 2:
         usage(progname)
         sys.exit(2)
@@ -218,6 +219,7 @@ def cli_main():
     serials = []
     pids = []
 
+    # noinspection PyUnboundLocalVariable
     for o, a in opts:
         if o == "-h":
             usage(progname)

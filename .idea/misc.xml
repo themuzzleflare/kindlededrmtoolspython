@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Black">
+    <option name="sdkName" value="Python 3.13 (kindlededrmtools)" />
+  </component>
+  <component name="GitLabDefaultAccount">
+    <option name="defaultAccountId" value="3f043060-148d-47a7-9bfd-893d5695fa94" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <selected-state>
+          <State>
+            <id>User defined</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.13 (kindlededrmtools)" project-jdk-type="Python SDK" />
+</project>

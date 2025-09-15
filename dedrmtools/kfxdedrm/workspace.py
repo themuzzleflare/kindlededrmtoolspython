@@ -1,3 +1,4 @@
+# coding=utf-8
 #  Copyright © 2025 Paul Tavitian.
 
 # common str:  "PIDv3AESAES/CBC/PKCS5PaddingHmacSHA256"
