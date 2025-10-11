@@ -24,7 +24,7 @@ class DrmException(Exception):
 
 class KindleKey(ABC):
     @staticmethod
-    def get_instance():
+    def get_instance() -> KindleKey:
         if sys.platform.startswith('win'):
             from dedrmtools.kindlekeys.kindlekeywin import KindleKeyWindows
             return KindleKeyWindows()
