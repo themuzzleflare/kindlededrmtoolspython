@@ -1,5 +1,5 @@
 pycryptodomex==3.23.0
 pycryptodome==3.23.0
 pyqt5==5.15.11
-lxml==6.0.2
+lxml==6.1.0
 apsw==3.51.0.0
