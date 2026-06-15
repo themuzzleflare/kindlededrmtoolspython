@@ -4,7 +4,7 @@ from __future__ import print_function
 __license__ = 'GPL v3'
 __version__ = "1.1"
 
-#  Copyright © 2025 Paul Tavitian.
+#  Copyright © 2025-2026 Paul Tavitian.
 
 import binascii
 import os

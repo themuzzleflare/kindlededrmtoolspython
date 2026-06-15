@@ -2,6 +2,8 @@
 __license__ = 'GPL v3'
 __version__ = '3.1'
 
+#  Copyright © 2026 Paul Tavitian.
+
 import getopt
 import json
 import os

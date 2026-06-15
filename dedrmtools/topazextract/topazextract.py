@@ -3,7 +3,7 @@ from __future__ import print_function
 
 __version__ = '6.0'
 
-#  Copyright © 2025 Paul Tavitian.
+#  Copyright © 2025-2026 Paul Tavitian.
 
 import getopt
 import os
