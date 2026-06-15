@@ -25,11 +25,13 @@ except ImportError:
 
 try:
     # lzma library from calibre 4.6.0 or later
+    # pyrefly: ignore [missing-import]
     import calibre_lzma.lzma1 as calibre_lzma
 except ImportError:
     calibre_lzma = None
     # lzma library from calibre 2.35.0 or later
     try:
+        # pyrefly: ignore [missing-import]
         import lzma.lzma1 as calibre_lzma
     except ImportError:
         calibre_lzma = None
@@ -39,10 +41,12 @@ except ImportError:
             # Need pip backports.lzma on Python <3.3
             try:
                 # noinspection PyPackageRequirements
+                # pyrefly: ignore [missing-import]
                 from backports import lzma
             except ImportError:
                 # Windows-friendly choice: pylzma wheels
                 # noinspection PyUnresolvedReferences,PyPackageRequirements
+                # pyrefly: ignore [missing-import]
                 import pylzma as lzma
 
 
@@ -383,17 +387,23 @@ class BinaryIonParser(object):
         if name == "" or name == SystemSymbols.ION:
             return
 
+        # pyrefly: ignore [unsupported-operation]
         if version < 1:
             version = 1
 
         table = self.findcatalogitem(name)
+        # pyrefly: ignore [unsupported-operation]
         if maxid < 0:
             _assert(table is not None and version == table.version, "Import %s lacks maxid" % name)
+            # pyrefly: ignore [missing-attribute]
             maxid = len(table.symnames)
 
         if table is not None:
+            # pyrefly: ignore [bad-specialization]
             self.symbols.import_(table, min(maxid, len(table.symnames)))
+            # pyrefly: ignore [unsupported-operation]
             if len(table.symnames) < maxid:
+                # pyrefly: ignore [unsupported-operation]
                 self.symbols.importunknown(name + "-unknown", maxid - len(table.symnames))
         else:
             self.symbols.importunknown(name, maxid)

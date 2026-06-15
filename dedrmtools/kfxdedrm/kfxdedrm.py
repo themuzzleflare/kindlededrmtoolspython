@@ -22,6 +22,7 @@ class KFXZipBook(Book):
         self.voucher = None
         self.decrypted = {}
 
+    # pyrefly: ignore [bad-override]
     def get_pid_meta_info(self):
         return None, None
 
@@ -93,11 +94,14 @@ class KFXZipBook(Book):
         self.voucher = voucher
 
     def get_book_title(self):
+        # noinspection PyTypeChecker
         return os.path.splitext(os.path.split(self.infile)[1])[0]
 
+    # pyrefly: ignore [bad-override]
     def get_book_extension(self):
         return '.kfx-zip'
 
+    # pyrefly: ignore [bad-override]
     def get_book_type(self):
         return 'KFX-ZIP'
 

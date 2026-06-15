@@ -124,6 +124,7 @@ class KindleKey(ABC):
         passwd_data = b'header_key_data'
         salt = b'HEADER.2011'
         # noinspection PyTypeChecker
+        # pyrefly: ignore [bad-argument-type]
         key_iv = PBKDF2(passwd_data, salt, dkLen=256, count=128)
         return AES.new(key_iv[0:32], AES.MODE_CBC, key_iv[32:48]).decrypt(encrypted_data)
 
@@ -137,6 +138,7 @@ class KindleKey(ABC):
             files = self.get_kindle_info_files()
 
         # noinspection PyShadowingBuiltins
+        # pyrefly: ignore [not-iterable]
         for file in files:
             key = self.get_db_from_file(file)
 

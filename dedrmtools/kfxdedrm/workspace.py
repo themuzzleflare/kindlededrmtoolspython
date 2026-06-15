@@ -38,9 +38,11 @@ class Workspace(object):
                 nib4 = matrix[moff + offset + ((uv3 >> 0x18) & 0xf) | ((uv2 >> 0x14) & 0xf0)]
                 moff += 0x100
             # noinspection PyUnboundLocalVariable
+            # pyrefly: ignore [unbound-name]
             rnib1 = matrix[moff + offset + nib1 * 0x10 + nib2]
             moff += 0x100
             # noinspection PyUnboundLocalVariable
+            # pyrefly: ignore [unbound-name]
             rnib2 = matrix[moff + offset + nib3 * 0x10 + nib4]
             moff += 0x100
             nwork[wo + 0] = rnib1 * 0x10 + rnib2

@@ -190,6 +190,7 @@ class MobiBook(Book):
             print("Cannot set meta_array: Error: {:s}".format(e.args[0]))
 
     # returns unicode
+    # pyrefly: ignore [bad-override]
     def get_book_title(self):
         codec_map = {
             1252: 'windows-1252',
@@ -211,6 +212,7 @@ class MobiBook(Book):
             title = title.split(b'\0')[0]
         return title.decode(codec)
 
+    # pyrefly: ignore [bad-override]
     def get_pid_meta_info(self):
         rec209 = b''
         token = b''
@@ -252,6 +254,7 @@ class MobiBook(Book):
                 # noinspection PyTypeChecker
                 temp_key_sum = sum(map(ord, temp_key)) & 0xff
             else:
+                # noinspection PyUnresolvedReferences
                 temp_key_sum = sum(temp_key) & 0xff
             found_key = None
             for i in range(count):
@@ -289,8 +292,10 @@ class MobiBook(Book):
 
     def get_file(self, outpath):
         # noinspection PyTypeChecker
+        # pyrefly: ignore [bad-argument-type]
         open(outpath, 'wb').write(self.mobi_data)
 
+    # pyrefly: ignore [bad-override]
     def get_book_type(self):
         if self.print_replica:
             return "Print Replica"
@@ -300,6 +305,7 @@ class MobiBook(Book):
             return "Mobipocket {0:d}".format(self.mobi_version)
         return "PalmDoc"
 
+    # pyrefly: ignore [bad-override]
     def get_book_extension(self):
         if self.print_replica:
             return ".azw4"
@@ -308,6 +314,7 @@ class MobiBook(Book):
         return ".mobi"
 
     # pids in pidlist may be unicode or bytearrays or bytes
+    # pyrefly: ignore [bad-override-param-name]
     def process_book(self, pidlist):
         crypto_type, = struct.unpack('>H', self.sect[0xC:0xC + 2])
         print("Crypto Type is: {0:d}".format(crypto_type))
@@ -316,6 +323,7 @@ class MobiBook(Book):
             print("This book is not encrypted.")
             # we must still check for Print Replica
             self.print_replica = (self.load_section(1)[0:4] == b'%MOP')
+            # pyrefly: ignore [bad-assignment]
             self.mobi_data = self.data_file
             return
         if crypto_type != 2 and crypto_type != 1:
@@ -370,6 +378,7 @@ class MobiBook(Book):
         if pid == '00000000':
             print("File has default encryption, no specific key needed.")
         else:
+            # noinspection PyTypeChecker
             print("File is encoded with PID {0}.".format(checksum_pid(pid)))
 
         # clear the crypto type
@@ -392,6 +401,7 @@ class MobiBook(Book):
                 mobidata_list.append(data[-extra_size:])
         if self.num_sections > self.records + 1:
             mobidata_list.append(self.data_file[self.sections[self.records + 1][0]:])
+        # pyrefly: ignore [bad-assignment]
         self.mobi_data = b''.join(mobidata_list)
         print("done")
         return
@@ -426,6 +436,7 @@ def cli_main():
         try:
             stripped_file = get_unencrypted_book(infile, pidlist)
             # noinspection PyTypeChecker
+            # pyrefly: ignore [bad-argument-type]
             open(outfile, 'wb').write(stripped_file)
         except DrmException as e:
             print("MobiDeDRM v{0} Error: {1:s}".format(__version__, e.args[0]))

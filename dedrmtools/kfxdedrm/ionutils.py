@@ -125,6 +125,7 @@ class IonUtils:
         secret = bytearray(secret)
 
         obfuscated = bytearray(len(secret))
+        # pyrefly: ignore [bad-argument-type]
         wordhash = bytearray(hashlib.sha256(word).digest())
 
         # shuffle secret and xor it with the first half of the word hash
@@ -154,6 +155,7 @@ class IonUtils:
         if len(secret) % magic != 0:
             secret = secret + b'\x00' * (magic - len(secret) % magic)
         obfuscated = bytearray(len(secret))
+        # pyrefly: ignore [bad-argument-type]
         wordhash = bytearray(hashlib.sha256(word).digest()[16:])
         # print(wordhash.hex())
         shuffled = bytearray(IonUtils.scramble(secret, magic))
@@ -229,6 +231,7 @@ class IonUtils:
             secret = secret + b'\x00' * (magic - len(secret) % magic)
         # secret = bytearray(secret)
         obfuscated = bytearray(len(secret))
+        # pyrefly: ignore [bad-argument-type]
         wordhash = bytearray(hashlib.sha256(word).digest())
         # print(wordhash.hex())
         shuffled = bytearray(IonUtils.scramble3(secret, magic))

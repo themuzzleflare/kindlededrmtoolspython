@@ -3,6 +3,7 @@
 import os
 import re
 import sys
+# pyrefly: ignore [missing-module-attribute]
 from ctypes import windll, c_wchar_p, c_uint, POINTER, byref, create_unicode_buffer, create_string_buffer, string_at, \
     Structure, c_void_p, cast
 from struct import unpack
@@ -22,6 +23,7 @@ try:
     import winreg
 except ImportError:
     # noinspection PyUnresolvedReferences
+    # pyrefly: ignore [missing-import]
     import _winreg as winreg
 
 MAX_PATH = 255
@@ -45,6 +47,7 @@ class DataBlob(Structure):
                 ('pbData', c_void_p)]
 
 
+# noinspection PyDeprecation
 DataBlob_p = POINTER(DataBlob)
 
 
@@ -67,6 +70,7 @@ def get_system_directory():
 def get_volume_serial_number(path=get_system_directory().split('\\')[0] + '\\'):
     # noinspection PyPep8Naming,PyUnresolvedReferences
     GetVolumeInformationW = kernel32.GetVolumeInformationW
+    # noinspection PyDeprecation
     GetVolumeInformationW.argtypes = [c_wchar_p, c_wchar_p, c_uint,
                                       POINTER(c_uint), POINTER(c_uint),
                                       POINTER(c_uint), c_wchar_p, c_uint]
@@ -116,11 +120,13 @@ def crypt_unprotect_data(indata, entropy, flags):
 def get_environment_variable(name):
     import ctypes
     # noinspection PyUnresolvedReferences
+    # pyrefly: ignore [missing-attribute]
     n = ctypes.windll.kernel32.GetEnvironmentVariableW(name, None, 0)
     if n == 0:
         return None
     buf = ctypes.create_unicode_buffer("\0" * n)
     # noinspection PyUnresolvedReferences
+    # pyrefly: ignore [missing-attribute]
     ctypes.windll.kernel32.GetEnvironmentVariableW(name, buf, n)
     return buf.value
 
@@ -129,9 +135,11 @@ class KindleKeyWindows(KindleKey):
     def __init__(self):
         print("KindleKeyWindows")
 
+    # pyrefly: ignore [bad-override]
     def get_username(self):
         # noinspection PyPep8Naming,PyUnresolvedReferences
         GetUserNameW = advapi32.GetUserNameW
+        # noinspection PyDeprecation
         GetUserNameW.argtypes = [c_wchar_p, POINTER(c_uint)]
         GetUserNameW.restype = c_uint
 
@@ -162,7 +170,8 @@ class KindleKeyWindows(KindleKey):
         # print "modified username:"+buffer.value
         return buffer.value.encode('utf-8')
 
-    # Locate all of the kindle-info style files and return as list
+    # Locate all the kindle-info style files and return as list
+    # pyrefly: ignore [bad-override]
     def get_kindle_info_files(self):
         k_info_files = []
         # some 64 bit machines do not have the proper registry key for some reason
@@ -174,23 +183,29 @@ class KindleKeyWindows(KindleKey):
                 # noinspection PyTypeChecker
                 path = winreg.ExpandEnvironmentStrings(u"%LOCALAPPDATA%")
             else:
+                # pyrefly: ignore [missing-attribute]
                 path = winreg.ExpandEnvironmentStrings("%LOCALAPPDATA%")
             # this is just another alternative.
             # path = getEnvironmentVariable('LOCALAPPDATA')
+            # noinspection PyUnresolvedReferences
             if not os.path.isdir(path):
                 path = ""
         else:
             # User Shell Folders show take precedent over Shell Folders if present
             try:
                 # this will still break
+                # pyrefly: ignore [missing-attribute]
                 regkey = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
                                         "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\User Shell Folders\\")
+                # pyrefly: ignore [missing-attribute]
                 path = winreg.QueryValueEx(regkey, 'Local AppData')[0]
                 if not os.path.isdir(path):
                     path = ""
                     try:
+                        # pyrefly: ignore [missing-attribute]
                         regkey = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
                                                 "Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Shell Folders\\")
+                        # pyrefly: ignore [missing-attribute]
                         path = winreg.QueryValueEx(regkey, 'Local AppData')[0]
                         if not os.path.isdir(path):
                             path = ""
@@ -208,6 +223,7 @@ class KindleKeyWindows(KindleKey):
 
             # look for (K4PC 1.25.1 and later) .kinf2018 file
             kinfopath = path + '\\Amazon\\Kindle\\storage\\.kinf2018'
+            # noinspection PyUnresolvedReferences
             if os.path.isfile(kinfopath):
                 found = True
                 print('Found K4PC 1.25+ kinf2018 file: ' + kinfopath)
@@ -215,6 +231,7 @@ class KindleKeyWindows(KindleKey):
 
             # look for (K4PC 1.9.0 and later) .kinf2011 file
             kinfopath = path + '\\Amazon\\Kindle\\storage\\.kinf2011'
+            # noinspection PyUnresolvedReferences
             if os.path.isfile(kinfopath):
                 found = True
                 print('Found K4PC 1.9+ kinf2011 file: ' + kinfopath)
@@ -222,6 +239,7 @@ class KindleKeyWindows(KindleKey):
 
             # look for (K4PC 1.6.0 and later) rainier.2.1.1.kinf file
             kinfopath = path + '\\Amazon\\Kindle\\storage\\rainier.2.1.1.kinf'
+            # noinspection PyUnresolvedReferences
             if os.path.isfile(kinfopath):
                 found = True
                 print('Found K4PC 1.6-1.8 kinf file: ' + kinfopath)
@@ -229,6 +247,7 @@ class KindleKeyWindows(KindleKey):
 
             # look for (K4PC 1.5.0 and later) rainier.2.1.1.kinf file
             kinfopath = path + '\\Amazon\\Kindle For PC\\storage\\rainier.2.1.1.kinf'
+            # noinspection PyUnresolvedReferences
             if os.path.isfile(kinfopath):
                 found = True
                 print('Found K4PC 1.5 kinf file: ' + kinfopath)
@@ -236,6 +255,7 @@ class KindleKeyWindows(KindleKey):
 
             # look for original (earlier than K4PC 1.5.0) kindle-info files
             kinfopath = path + '\\Amazon\\Kindle For PC\\{AMAwzsaPaaZAzmZzZQzgZCAkZ3AjA_AY}\\kindle.info'
+            # noinspection PyUnresolvedReferences
             if os.path.isfile(kinfopath):
                 found = True
                 print('Found K4PC kindle.info file: ' + kinfopath)
@@ -247,6 +267,7 @@ class KindleKeyWindows(KindleKey):
 
     # determine type of kindle info provided and return a
     # database of keynames and values
+    # pyrefly: ignore [bad-override]
     def get_db_from_file(self, k_info_file):
         names = [
             b'kindle.account.tokens',
@@ -297,15 +318,20 @@ class KindleKeyWindows(KindleKey):
             guid = m.group(4)
 
         # noinspection PyUnboundLocalVariable
+        # pyrefly: ignore [unbound-name]
         if version == 5:  # .kinf2011
             # noinspection PyUnboundLocalVariable
+            # pyrefly: ignore [unbound-name]
             added_entropy = build + guid
         elif version == 6:  # .kinf2018
             # noinspection PyUnboundLocalVariable
+            # pyrefly: ignore [unbound-name]
             salt = str(0x6d8 * int(build)).encode('utf-8') + guid
             # noinspection PyTypeChecker
+            # pyrefly: ignore [unsupported-operation]
             sp = self.get_username() + b'+@#$%+' + get_id_string().encode('utf-8')
             passwd = self.encode(self.sha256(sp), charMap5)
+            # pyrefly: ignore [bad-argument-type]
             key = PBKDF2(passwd, salt, count=10000, dkLen=0x400)[:32]  # this is very slow
 
         # loop through the item records until all are processed
@@ -368,6 +394,7 @@ class KindleKeyWindows(KindleKey):
                 encrypted_value = self.decode(encdata, testMap8)
                 # print "decoded data:",encryptedValue.encode('hex')
                 # noinspection PyUnboundLocalVariable
+                # pyrefly: ignore [unbound-name]
                 entropy = self.sha1(keyhash) + added_entropy
                 cleartext = crypt_unprotect_data(encrypted_value, entropy, 1)
             elif version == 6:
@@ -382,6 +409,7 @@ class KindleKeyWindows(KindleKey):
                 # set up AES-CTR
                 ctr = Counter.new(128, initial_value=iv)
                 # noinspection PyUnboundLocalVariable
+                # pyrefly: ignore [unbound-name]
                 cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
                 # decrypt and decode
                 cleartext = self.decode(cipher.decrypt(ciphertext), charMap5)
@@ -395,7 +423,9 @@ class KindleKeyWindows(KindleKey):
             # store values used in decryption
             db[b'IDString'] = get_id_string().encode('utf-8')
             db[b'UserName'] = self.get_username()
+            # noinspection PyUnresolvedReferences
             print("Decrypted key file using IDString '{0:s}' and UserName '{1:s}'".format(get_id_string(),
+                                                                                          # pyrefly: ignore [missing-attribute]
                                                                                           self.get_username().decode(
                                                                                               'utf-8')))
         else:

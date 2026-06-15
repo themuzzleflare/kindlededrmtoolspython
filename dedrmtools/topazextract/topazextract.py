@@ -23,21 +23,27 @@ class TopazBook(Book):
     def __init__(self, filename):
         pass
 
+    # pyrefly: ignore [bad-override]
     def get_pid_meta_info(self):
         return None, None
 
+    # pyrefly: ignore [bad-override]
     def get_book_title(self):
         return ""
 
+    # pyrefly: ignore [bad-override-param-name]
     def process_book(self, pidlst):
         pass
 
+    # pyrefly: ignore [bad-override-param-name]
     def get_file(self, zipname):
         pass
 
+    # pyrefly: ignore [bad-override]
     def get_book_type(self):
         return "Topaz"
 
+    # pyrefly: ignore [bad-override]
     def get_book_extension(self):
         return ".htmlz"
 
@@ -106,6 +112,7 @@ def cli_main():
     title = tb.get_book_title()
     print("Processing Book: {0}".format(title))
     md1, md2 = tb.get_pid_meta_info()
+    # pyrefly: ignore [bad-argument-type]
     pids.extend(kgenpids.get_pid_list(md1, md2, serials, k_database_files))
 
     # noinspection PyBroadException

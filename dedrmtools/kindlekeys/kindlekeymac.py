@@ -36,14 +36,17 @@ class CryptUnprotectData(object):
         sp = kindlekey.get_username() + b'+@#$%+' + id_string
         passwd_data = kindlekey.encode(kindlekey.sha256(sp), charMap2)
         salt = entropy
+        # pyrefly: ignore [bad-argument-type]
         key_iv = PBKDF2(passwd_data, salt, count=0x800, dkLen=0x400)
         self.key = key_iv[0:32]
         self.iv = key_iv[32:48]
         # noinspection PyUnresolvedReferences
+        # pyrefly: ignore [missing-attribute]
         self.crp.set_decrypt_key(self.key, self.iv)
 
     def decrypt(self, kindlekey: 'KindleKeyMacOS', encrypted_data):
         # noinspection PyUnresolvedReferences
+        # pyrefly: ignore [missing-attribute]
         cleartext = self.crp.decrypt(encrypted_data)
         cleartext = kindlekey.decode(cleartext, charMap2)
         return cleartext
@@ -69,6 +72,7 @@ def get_volumes_serial_numbers():
         pp = resline.find(b'\"Serial Number\" = \"')
         if pp >= 0:
             sernum = resline[pp + 19:-1]
+            # pyrefly: ignore [bad-argument-type]
             sernums.append(sernum.strip())
     return sernums
 
@@ -111,6 +115,7 @@ def get_disk_partition_uuids():
         if pp >= 0:
             uuidnum = resline[pp + 10:-1]
             uuidnum = uuidnum.strip()
+            # pyrefly: ignore [bad-argument-type]
             uuids.append(uuidnum)
     return uuids
 
@@ -143,22 +148,30 @@ def get_mac_addresses_munged():
             # by xoring it with 0xa5 and swapping elements 3 and 4
             for i in range(6):
                 # noinspection PyTypeChecker
+                # pyrefly: ignore [unsupported-operation]
                 maclst[i] = int(b'0x' + maclst[i], 0)
             mlst = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00]
             # noinspection PyTypeChecker
+            # pyrefly: ignore [unsupported-operation]
             mlst[5] = maclst[5] ^ 0xa5
             # noinspection PyTypeChecker
+            # pyrefly: ignore [unsupported-operation]
             mlst[4] = maclst[3] ^ 0xa5
             # noinspection PyTypeChecker
+            # pyrefly: ignore [unsupported-operation]
             mlst[3] = maclst[4] ^ 0xa5
             # noinspection PyTypeChecker
+            # pyrefly: ignore [unsupported-operation]
             mlst[2] = maclst[2] ^ 0xa5
             # noinspection PyTypeChecker
+            # pyrefly: ignore [unsupported-operation]
             mlst[1] = maclst[1] ^ 0xa5
             # noinspection PyTypeChecker
+            # pyrefly: ignore [unsupported-operation]
             mlst[0] = maclst[0] ^ 0xa5
             macnum = b'%0.2x%0.2x%0.2x%0.2x%0.2x%0.2x' % (mlst[0], mlst[1], mlst[2], mlst[3], mlst[4], mlst[5])
             # print 'munged mac', macnum
+            # pyrefly: ignore [bad-argument-type]
             macnums.append(macnum)
     return macnums
 
@@ -168,8 +181,10 @@ def get_id_strings():
     strings = []
     strings.extend(get_mac_addresses_munged())
     strings.extend(get_volumes_serial_numbers())
+    # pyrefly: ignore [bad-argument-type]
     strings.extend(get_disk_partition_names())
     strings.extend(get_disk_partition_uuids())
+    # pyrefly: ignore [bad-argument-type]
     strings.append(b'9999999999')
     # print "ID Strings:\n",strings
     return strings
@@ -183,56 +198,75 @@ class KindleKeyMacOS(KindleKey):
     def get_username(self):
         username = os.getenv('USER')
         # print "Username:",username
+        # pyrefly: ignore [missing-attribute]
+        # noinspection PyUnresolvedReferences
         return username.encode('utf-8')
 
+    # pyrefly: ignore [bad-override]
     def get_kindle_info_files(self):
         # file searches can take a long time on some systems, so just look in known specific places.
         k_info_files = []
         found = False
         home = os.getenv('HOME')
         # check for  .kinf2018 file in new location (App Store Kindle for Mac)
+        # pyrefly: ignore [unsupported-operation]
+        # noinspection PyUnresolvedReferences
         testpath = home + '/Library/Containers/com.amazon.Kindle/Data/Library/Application Support/Kindle/storage/.kinf2018'
         if os.path.isfile(testpath):
             k_info_files.append(testpath)
             print('Found k4Mac kinf2018 file: ' + testpath)
             found = True
         # check for  .kinf2018 files
+        # pyrefly: ignore [unsupported-operation]
+        # noinspection PyUnresolvedReferences
         testpath = home + '/Library/Application Support/Kindle/storage/.kinf2018'
         if os.path.isfile(testpath):
             k_info_files.append(testpath)
             print('Found k4Mac kinf2018 file: ' + testpath)
             found = True
         # check for  .kinf2011 file in new location (App Store Kindle for Mac)
+        # pyrefly: ignore [unsupported-operation]
+        # noinspection PyUnresolvedReferences
         testpath = home + '/Library/Containers/com.amazon.Kindle/Data/Library/Application Support/Kindle/storage/.kinf2011'
         if os.path.isfile(testpath):
             k_info_files.append(testpath)
             print('Found k4Mac kinf2011 file: ' + testpath)
             found = True
         # check for  .kinf2011 files from 1.10
+        # pyrefly: ignore [unsupported-operation]
+        # noinspection PyUnresolvedReferences
         testpath = home + '/Library/Application Support/Kindle/storage/.kinf2011'
         if os.path.isfile(testpath):
             k_info_files.append(testpath)
             print('Found k4Mac kinf2011 file: ' + testpath)
             found = True
         # check for  .rainier-2.1.1-kinf files from 1.6
+        # pyrefly: ignore [unsupported-operation]
+        # noinspection PyUnresolvedReferences
         testpath = home + '/Library/Application Support/Kindle/storage/.rainier-2.1.1-kinf'
         if os.path.isfile(testpath):
             k_info_files.append(testpath)
             print('Found k4Mac rainier file: ' + testpath)
             found = True
         # check for  .kindle-info files from 1.4
+        # pyrefly: ignore [unsupported-operation]
+        # noinspection PyUnresolvedReferences
         testpath = home + '/Library/Application Support/Kindle/storage/.kindle-info'
         if os.path.isfile(testpath):
             k_info_files.append(testpath)
             print('Found k4Mac kindle-info file: ' + testpath)
             found = True
         # check for  .kindle-info file from 1.2.2
+        # pyrefly: ignore [unsupported-operation]
+        # noinspection PyUnresolvedReferences
         testpath = home + '/Library/Application Support/Amazon/Kindle/storage/.kindle-info'
         if os.path.isfile(testpath):
             k_info_files.append(testpath)
             print('Found k4Mac kindle-info file: ' + testpath)
             found = True
         # check for  .kindle-info file from 1.0 beta 1 (27214)
+        # pyrefly: ignore [unsupported-operation]
+        # noinspection PyUnresolvedReferences
         testpath = home + '/Library/Application Support/Amazon/Kindle for Mac/storage/.kindle-info'
         if os.path.isfile(testpath):
             k_info_files.append(testpath)
@@ -242,6 +276,7 @@ class KindleKeyMacOS(KindleKey):
             print('No k4Mac kindle-info/rainier/kinf2011 files have been found.')
         return k_info_files
 
+    # pyrefly: ignore [bad-override]
     def get_db_from_file(self, k_info_file):
         names = [
             b'kindle.account.tokens',
@@ -303,17 +338,21 @@ class KindleKeyMacOS(KindleKey):
                 # print ("guid",guid,"\n")
 
                 # noinspection PyUnboundLocalVariable
+                # pyrefly: ignore [unbound-name]
                 if version == 5:  # .kinf2011: identical to K4PC, except the build number gets multiplied
                     # noinspection PyUnboundLocalVariable
+                    # pyrefly: ignore [unbound-name]
                     entropy = str(0x2df * int(build)).encode('utf-8') + guid
                     cud = CryptUnprotectData(self, entropy, id_string)
                     # print ("entropy",entropy)
                     # print ("cud",cud)
 
                 elif version == 6:  # .kinf2018: identical to K4PC
+                    # pyrefly: ignore [unbound-name]
                     salt = str(0x6d8 * int(build)).encode('utf-8') + guid
                     sp = self.get_username() + b'+@#$%+' + id_string
                     passwd = self.encode(self.sha256(sp), charMap5)
+                    # pyrefly: ignore [bad-argument-type]
                     key = PBKDF2(passwd, salt, count=10000, dkLen=0x400)[:32]
 
                     # print ("salt",salt)
@@ -386,6 +425,7 @@ class KindleKeyMacOS(KindleKey):
                         # decode using testMap8 to get the CryptProtect Data
                         encrypted_value = self.decode(encdata, testMap8)
                         # noinspection PyUnboundLocalVariable
+                        # pyrefly: ignore [unbound-name]
                         cleartext = cud.decrypt(self, encrypted_value)
 
                     elif version == 6:
@@ -400,6 +440,7 @@ class KindleKeyMacOS(KindleKey):
                         # set up AES-CTR
                         ctr = Counter.new(128, initial_value=iv)
                         # noinspection PyUnboundLocalVariable
+                        # pyrefly: ignore [unbound-name]
                         cipher = AES.new(key, AES.MODE_CTR, counter=ctr)
                         # decrypt and decode
                         cleartext = self.decode(cipher.decrypt(ciphertext), charMap5)
@@ -419,9 +460,11 @@ class KindleKeyMacOS(KindleKey):
         if len(db) > 6:
             # store values used in decryption
             # noinspection PyUnboundLocalVariable
+            # pyrefly: ignore [missing-attribute]
             print("Decrypted key file using IDString '{0:s}' and UserName '{1:s}'".format(id_string.decode('utf-8'),
                                                                                           self.get_username().decode(
                                                                                               'utf-8')))
+            # pyrefly: ignore [unsupported-operation]
             db[b'IDString'] = id_string
             db[b'UserName'] = self.get_username()
         else:

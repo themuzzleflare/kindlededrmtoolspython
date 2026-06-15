@@ -20,6 +20,7 @@ try:
     import html.entities as htmlentitydefs
 except ImportError:
     # noinspection PyUnresolvedReferences
+    # pyrefly: ignore [missing-import]
     import htmlentitydefs
 
 import json
@@ -29,7 +30,7 @@ class DrmException(Exception):
     pass
 
 
-# cleanup unicode filenames
+# clean-up unicode filenames
 # borrowed from calibre from calibre/src/calibre/__init__.py
 # added in removal of control (<32) chars
 # and removal of . at start and end

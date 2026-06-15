@@ -14,8 +14,11 @@ class DrmException(Exception):
     pass
 
 
+# pyrefly: ignore [unknown-name]
 global charMap1
+# pyrefly: ignore [unknown-name]
 global charMap3
+# pyrefly: ignore [unknown-name]
 global charMap4
 
 # noinspection PyRedeclaration
@@ -74,6 +77,7 @@ def decode(data, char_map):
         if (high == -1) or (low == -1):
             break
         value = (((high * len(char_map)) ^ 0x80) & 0xFF) + low
+        # pyrefly: ignore [unsupported-operation]
         result += pack('B', value)
     return result
 
@@ -203,6 +207,7 @@ def get_kindle_pids(rec209, token, serialnum):
     if sys.version_info[0] == 2:
         # noinspection PyUnresolvedReferences
         if isinstance(serialnum, unicode):
+            # noinspection PyUnresolvedReferences
             serialnum = serialnum.encode('utf-8')
 
     if rec209 is None:

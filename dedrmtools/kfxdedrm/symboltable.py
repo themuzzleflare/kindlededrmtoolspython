@@ -25,16 +25,20 @@ class SymbolTable(object):
         if sid < 1:
             raise ValueError("Invalid symbol id")
 
+        # pyrefly: ignore [bad-argument-type]
         if sid < len(self.table):
+            # pyrefly: ignore [unsupported-operation]
             return self.table[sid]
         else:
             return ""
 
     def import_(self, table, maxid):
         for i in range(maxid):
+            # pyrefly: ignore [missing-attribute]
             self.table.append(table.symnames[i])
 
     def importunknown(self, name, maxid):
         for i in range(maxid):
             # noinspection PyTypeChecker
+            # pyrefly: ignore [missing-attribute]
             self.table.append("%s#%d" % (name, i + 1))

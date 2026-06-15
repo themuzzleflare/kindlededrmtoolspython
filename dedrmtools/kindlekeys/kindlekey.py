@@ -62,6 +62,7 @@ def cli_main():
         outpath = os.path.dirname(argv[0])
 
     # make sure the outpath is canonical
+    # noinspection PyTypeChecker
     outpath = os.path.realpath(os.path.normpath(outpath))
 
     if not KindleKey.get_instance().getkey(outpath, files):
