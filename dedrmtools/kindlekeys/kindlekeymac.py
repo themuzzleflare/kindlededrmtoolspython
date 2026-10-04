@@ -386,7 +386,7 @@ class KindleKeyMacOS(KindleKey):
                     # read and store in rcnt records of data
                     # that make up the contents value
                     edlst = []
-                    for i in range(rcnt):
+                    for _ in range(rcnt):
                         item = items.pop(0)
                         edlst.append(item)
 

@@ -83,7 +83,7 @@ def gui_main():
         return cli_main()
 
     class ExceptionDialog(tkinter.Frame):
-        # noinspection PyShadowingNames
+        # noinspection PyShadowingNames,missing-constructor
         def __init__(self, root, text):
             tkinter.Frame.__init__(self, root, border=5)
             # noinspection PyTypeChecker

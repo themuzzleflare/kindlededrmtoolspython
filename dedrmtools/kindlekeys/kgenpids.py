@@ -121,7 +121,7 @@ def generate_pid_encryption_table():
     table = []
     for counter1 in range(0, 0x100):
         value = counter1
-        for counter2 in range(0, 8):
+        for _ in range(0, 8):
             if value & 1 == 0:
                 value = value >> 1
             else:

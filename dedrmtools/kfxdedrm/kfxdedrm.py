@@ -87,7 +87,7 @@ class KFXZipBook(Book):
         license_type = voucher.getlicensetype()
         if license_type != "Purchase":
             # raise Exception(("This book is licensed as {0}. "
-            #        'These tools are intended for use on purchased books.').format(license_type))
+            #        'These tools are intended for use on purchased books.').format(licence_type))
             print("Warning: This book is licensed as {0}. "
                   "These tools are intended for use on purchased books. Continuing ...".format(license_type))
 

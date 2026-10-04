@@ -354,7 +354,7 @@ class KindleKeyWindows(KindleKey):
             # read and store in rcnt records of data
             # that make up the contents value
             edlst = []
-            for i in range(rcnt):
+            for _ in range(rcnt):
                 item = items.pop(0)
                 edlst.append(item)
 
@@ -422,6 +422,7 @@ class KindleKeyWindows(KindleKey):
         if len(db) > 6:
             # store values used in decryption
             db[b'IDString'] = get_id_string().encode('utf-8')
+            # pyrefly: ignore [unsupported-operation]
             db[b'UserName'] = self.get_username()
             # noinspection PyUnresolvedReferences
             print("Decrypted key file using IDString '{0:s}' and UserName '{1:s}'".format(get_id_string(),

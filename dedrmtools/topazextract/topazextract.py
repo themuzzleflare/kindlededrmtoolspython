@@ -19,7 +19,7 @@ class DrmException(Exception):
 
 
 class TopazBook(Book):
-    # noinspection PyUnusedLocal
+    # noinspection PyUnusedLocal,unused-parameter
     def __init__(self, filename):
         pass
 

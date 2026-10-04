@@ -163,7 +163,7 @@ class MobiBook(Book):
             if (len(exth) >= 12) and (exth[:4] == b'EXTH'):
                 nitems, = struct.unpack('>I', exth[8:12])
                 pos = 12
-                for i in range(nitems):
+                for _ in range(nitems):
                     # noinspection PyShadowingBuiltins
                     type, size = struct.unpack('>II', exth[pos: pos + 8])
                     content = exth[pos + 8: pos + size]
